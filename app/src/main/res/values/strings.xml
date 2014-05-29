@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">LikeAndroid</string>
+    <string name="title_section1">桌台</string>
+    <string name="title_section2">点菜</string>
+    <string name="title_section3">划菜</string>
+    <string name="title_section4">已点</string>
+    <string name="title_section5">菜单</string>
+    <string name="action_settings">设定</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_order">Order</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>
