@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:columnCount="2">
+    <TextView
+        android:text="菜品："/>
+    <TextView android:id="@+id/foodTitle"
+        android:text="菜品1"/>
+    <TextView
+        android:text="桌号"/>
+    <EditText android:id="@+id/deskTitle"
+        />
+    <TextView android:text="份数"/>
+    <EditText android:id="@+id/foodNumber"
+        android:text="1"
+        android:inputType="number"
+        android:numeric="integer"/>
+
+</GridLayout>

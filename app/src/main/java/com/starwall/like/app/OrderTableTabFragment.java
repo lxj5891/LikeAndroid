@@ -18,6 +18,19 @@ import java.util.HashMap;
  * Created by kita on 14-5-27.
  */
 public class OrderTableTabFragment extends Fragment {
+
+
+    public enum FragmentType{
+        ORDER_FOOD,
+        SUBMIT_ORDER
+    }
+
+    private FragmentType fragmentType;
+
+    public OrderTableTabFragment(FragmentType type) {
+        fragmentType = type;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
@@ -48,7 +61,18 @@ public class OrderTableTabFragment extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             Intent intent = new Intent();
-            intent.setClass(getActivity(),OrderFoodActivity.class);
+
+            switch (fragmentType){
+                case SUBMIT_ORDER:
+                    intent.setClass(getActivity(),SubmitOrderActivity.class);
+                    break;
+
+                default:
+                    intent.setClass(getActivity(),OrderFoodActivity.class);
+                    break;
+            }
+
+
             startActivity(intent);
         }
     }

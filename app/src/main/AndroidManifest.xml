@@ -16,7 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".OrderFoodActivity">
+        <activity android:name=".OrderFoodActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".SubmitOrderActivity">
         </activity>
     </application>
 

@@ -2,12 +2,17 @@ package com.starwall.like.app;
 
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -23,6 +28,10 @@ import java.util.HashMap;
  *
  */
 public class FoodTabFragment extends Fragment {
+    AlertDialog.Builder dialogBuilder;
+
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -68,7 +77,7 @@ public class FoodTabFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.food_fragment, container, false);
 
-        ListView listView = (ListView)rootView.findViewById(R.id.foodListView);
+        GridView gridView = (GridView)rootView.findViewById(R.id.foodGridView);
 
         ArrayList<HashMap<String, Object>>  foods = new ArrayList<HashMap<String, Object>>();
 
@@ -76,15 +85,41 @@ public class FoodTabFragment extends Fragment {
             HashMap<String, Object> desk = new HashMap<String, Object>();
             desk.put("image", R.drawable.dinner);
             desk.put("title", "菜品" + i);
-            desk.put("info", "价格:" + i + "元");
             foods.add(desk);
         }
 
         SimpleAdapter ad = new SimpleAdapter(getActivity(), foods, R.layout.food_item,
-                new String[]{"image","title", "info"},new int[]{R.id.foodImage,R.id.foodTitle, R.id.foodInfo});
-        listView.setAdapter(ad);
+                new String[]{"image","title"},new int[]{R.id.foodImage,R.id.foodTitle});
+        gridView.setAdapter(ad);
+
+
+        dialogBuilder = new AlertDialog.Builder(getActivity());
+        dialogBuilder.setCancelable(true);
+
+        View dialogView = inflater.inflate(R.layout.order_dialog,container,false);
+
+        dialogBuilder.setView(dialogView);
+
+        gridView.setOnItemClickListener(new ItemClickListener());
+
+
         return rootView;
     }
 
 
+    public class ItemClickListener implements AdapterView.OnItemClickListener{
+
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+
+
+            dialogBuilder.setPositiveButton("确定",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                }
+            });
+            dialogBuilder.show();
+        }
+    }
 }

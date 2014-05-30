@@ -138,11 +138,15 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
                 return fr;
             }
             else if (position == 1){
-                return new OrderTableTabFragment();
+                return new OrderTableTabFragment(OrderTableTabFragment.FragmentType.ORDER_FOOD);
             }
 
             else if (position == 2){
                 return new PresentTabFragment();
+            }
+
+            else if (position == 3){
+                return new OrderTableTabFragment(OrderTableTabFragment.FragmentType.SUBMIT_ORDER);
             }
 
             else{
