@@ -28,7 +28,7 @@ import java.util.HashMap;
  *
  */
 public class FoodTabFragment extends Fragment {
-    AlertDialog.Builder dialogBuilder;
+
 
 
 
@@ -93,12 +93,7 @@ public class FoodTabFragment extends Fragment {
         gridView.setAdapter(ad);
 
 
-        dialogBuilder = new AlertDialog.Builder(getActivity());
-        dialogBuilder.setCancelable(true);
 
-        View dialogView = inflater.inflate(R.layout.order_dialog,container,false);
-
-        dialogBuilder.setView(dialogView);
 
         gridView.setOnItemClickListener(new ItemClickListener());
 
@@ -111,8 +106,14 @@ public class FoodTabFragment extends Fragment {
 
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+            dialogBuilder.setCancelable(true);
 
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
 
+            View dialogView = inflater.inflate(R.layout.order_dialog,null);
+
+            dialogBuilder.setView(dialogView);
 
             dialogBuilder.setPositiveButton("确定",new DialogInterface.OnClickListener() {
                 @Override
