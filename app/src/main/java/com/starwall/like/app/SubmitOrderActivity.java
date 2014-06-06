@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import com.starwall.like.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

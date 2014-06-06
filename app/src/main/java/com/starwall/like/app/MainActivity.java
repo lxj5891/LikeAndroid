@@ -22,6 +22,8 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import com.starwall.like.AppContext;
+import com.starwall.like.R;
 
 
 public class MainActivity extends Activity implements ActionBar.TabListener {
@@ -135,6 +137,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 
             if (position == 0){
                 DeskTabFragment fr = new DeskTabFragment();
+                fr.setContext((AppContext) getApplicationContext());
                 return fr;
             }
             else if (position == 1){

@@ -1,56 +1,91 @@
 package com.starwall.like.app;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
+import com.starwall.like.AppContext;
+import com.starwall.like.AppException;
+import com.starwall.like.R;
+import com.starwall.like.api.DeskModule;
+import com.starwall.like.bean.Desk;
+import com.starwall.like.bean.DeskList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import android.os.Handler;
 
 public class DeskTabFragment extends Fragment {
 
+
     AlertDialog.Builder dialogBuilder;
+
+    private AppContext mContext;
+    private Handler mHandler;
+    private DeskList deskList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-        GridView gridView = (GridView)rootView.findViewById(R.id.deskGridView);
-
-        ArrayList<HashMap<String, Object>> listMap = new ArrayList<HashMap<String, Object>>();
-
-        for (int i = 0; i < 20; i++){
-            HashMap<String, Object> desk = new HashMap<String, Object>();
-            desk.put("image", R.drawable.table);
-            desk.put("text", "No." + i);
-            listMap.add(desk);
-        }
-
-        SimpleAdapter tableItems = new SimpleAdapter(getActivity(), listMap, R.layout.desk_item,
-                new String[]{"image","text"},new int[]{R.id.deskItemImage,R.id.deskItemText});
-
-        gridView.setAdapter(tableItems);
-
+        initData(rootView);
         dialogBuilder = new AlertDialog.Builder(getActivity());
-
-        gridView.setOnItemClickListener(new ItemClickListener());
-
         return rootView;
+    }
+
+    private void initData(final View rootView) {
+
+        mHandler = new Handler() {
+
+            public void handleMessage(Message msg) {
+                if (msg.what == 1) {
+                    GridView gridView = (GridView) rootView.findViewById(R.id.deskGridView);
+
+                    ArrayList<HashMap<String, Object>> listMap = new ArrayList<HashMap<String, Object>>();
+                    ArrayList<Desk> items = deskList.getItems();
+
+                    for (int i = 0; i < items.size(); i++) {
+                        Desk desk = items.get(i);
+
+                        HashMap<String, Object> deskHash = new HashMap<String, Object>();
+                        deskHash.put("image", R.drawable.table);
+                        deskHash.put("text", desk.getName());
+                        listMap.add(deskHash);
+                    }
+
+                    SimpleAdapter tableItems = new SimpleAdapter(getActivity(), listMap, R.layout.desk_item,
+                            new String[]{"image", "text"}, new int[]{R.id.deskItemImage, R.id.deskItemText});
+
+                    gridView.setAdapter(tableItems);
+                    gridView.setOnItemClickListener(new ItemClickListener());
+                }
+            }
+        };
+
+        new Thread(){
+            @Override
+            public void run() {
+
+                Message msg = new Message();
+
+                try {
+                    deskList = DeskModule.getDeskList(mContext);
+                    msg.what = 1;
+                } catch (AppException e) {
+                    e.printStackTrace();
+                }
+                mHandler.sendMessage(msg);
+            }
+        }.start();
     }
 
     public class ItemClickListener implements AdapterView.OnItemClickListener{
@@ -85,8 +120,10 @@ public class DeskTabFragment extends Fragment {
             });
 
             dialogBuilder.show();
-
         }
     }
 
+    public void setContext(AppContext mContext) {
+        this.mContext = mContext;
+    }
 }

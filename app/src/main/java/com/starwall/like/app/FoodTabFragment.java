@@ -16,6 +16,7 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import com.starwall.like.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

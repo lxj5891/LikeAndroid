@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+import com.starwall.like.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
