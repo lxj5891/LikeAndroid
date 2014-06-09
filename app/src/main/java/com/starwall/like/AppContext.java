@@ -193,7 +193,7 @@ public class AppContext extends Application {
      * 用户注销
      */
     public void Logout() {
-        ApiClient.cleanCookie();
+        ApiClient.cleanCookie(this);
         this.cleanCookie();
         this.login = false;
         this.loginUid = 0;

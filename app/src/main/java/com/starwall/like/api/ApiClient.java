@@ -52,6 +52,7 @@ public class ApiClient {
     }
 
     public static void cleanCookie(AppContext appContext) {
+
         appCookie = "";
         appContext.setProperty("cookie","");
     }
