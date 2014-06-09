@@ -154,6 +154,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 
             else{
                 FoodTabFragment fr = new FoodTabFragment();
+                fr.setContext((AppContext) getApplicationContext());
                 return fr;
             }
 

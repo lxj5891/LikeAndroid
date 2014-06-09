@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.NavUtils;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,12 +24,13 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+import com.starwall.like.AppContext;
+import com.starwall.like.AppException;
 import com.starwall.like.R;
+import com.starwall.like.api.MenuModule;
+import com.starwall.like.bean.MenuList;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +44,9 @@ public class OrderFoodActivity extends Activity implements SearchView.OnQueryTex
     ArrayList<HashMap<String, Object>> foods;
     ArrayList<HashMap<String, Object>> foodsForSearch;
 
+    private Handler mHandler;
+    private MenuList menuList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,25 +56,61 @@ public class OrderFoodActivity extends Activity implements SearchView.OnQueryTex
 
         setContentView(R.layout.order_food_activity);
 
-        listView = (ListView)findViewById(R.id.orderFoodListView);
-        listView.setTextFilterEnabled(true);
+        initData();
 
-        foodsForSearch = new ArrayList<HashMap<String, Object>>();
-        foods = new ArrayList<HashMap<String, Object>>();
+    }
 
-        for (int i = 0; i < 20; i++){
-            HashMap<String, Object> desk = new HashMap<String, Object>();
-            desk.put("image", R.drawable.dinner);
-            desk.put("title", "菜品" + i);
-            desk.put("info", "价格:" + i + "元");
-            foodsForSearch.add(desk);
-            foods.add(desk);
-        }
+    public void initData() {
 
-        foodAdapter = new OrderFoodAdapter(this, foods, R.layout.order_food_item,
-                new String[]{"image","title", "info"},new int[]{R.id.foodImage,R.id.foodTitle, R.id.foodInfo});
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
 
-        listView.setAdapter(foodAdapter);
+                listView = (ListView)findViewById(R.id.orderFoodListView);
+                listView.setTextFilterEnabled(true);
+
+                foodsForSearch = new ArrayList<HashMap<String, Object>>();
+                foods = new ArrayList<HashMap<String, Object>>();
+
+                List<com.starwall.like.bean.Menu> menus = menuList.getItems();
+
+                Iterator<com.starwall.like.bean.Menu> it = menus.iterator();
+
+                int i = 0;
+                while (it.hasNext()) {
+                    com.starwall.like.bean.Menu menu = it.next();
+                    HashMap<String, Object> desk = new HashMap<String, Object>();
+                    desk.put("image", R.drawable.dinner);
+                    desk.put("title", "菜品" + menu.getItem().getItemName());
+                    desk.put("info", "价格:" + i + "元");
+                    foodsForSearch.add(desk);
+                    foods.add(desk);
+                }
+
+                foodAdapter = new OrderFoodAdapter(getApplicationContext(), foods, R.layout.order_food_item,
+                        new String[]{"image","title", "info"},new int[]{R.id.foodImage,R.id.foodTitle, R.id.foodInfo});
+
+                listView.setAdapter(foodAdapter);
+            }
+        };
+
+        new Thread() {
+
+            @Override
+            public void run() {
+
+                Message msg = new Message();
+                msg.what = 1;
+                try {
+
+                    menuList = MenuModule.getMenuList((AppContext) getApplicationContext());
+                    Log.i("MenuList - ", menuList.toString());
+                } catch (AppException e) {
+                    e.printStackTrace();
+                }
+                mHandler.sendMessage(msg);
+            }
+        }.start();
     }
 
     @Override

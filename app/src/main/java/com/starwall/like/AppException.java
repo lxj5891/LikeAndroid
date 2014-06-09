@@ -6,7 +6,7 @@ import android.os.Environment;
 import android.os.Looper;
 import android.widget.Toast;
 
-import com.starwall.like.R;
+
 import org.apache.http.client.ClientProtocolException;
 
 import java.io.File;

@@ -51,8 +51,9 @@ public class ApiClient {
         return appUserAgent.toString();
     }
 
-    public static void cleanCookie() {
+    public static void cleanCookie(AppContext appContext) {
         appCookie = "";
+        appContext.setProperty("cookie","");
     }
 
     private static DefaultHttpClient getHttpClient() {

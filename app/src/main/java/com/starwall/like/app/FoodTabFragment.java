@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +18,17 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import com.starwall.like.AppContext;
+import com.starwall.like.AppException;
 import com.starwall.like.R;
+import com.starwall.like.api.MenuModule;
+import com.starwall.like.bean.Menu;
+import com.starwall.like.bean.MenuList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -31,7 +40,10 @@ import java.util.HashMap;
 public class FoodTabFragment extends Fragment {
 
 
+    private AppContext mContext;
 
+    private Handler mHandler;
+    private MenuList menuList;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -73,33 +85,67 @@ public class FoodTabFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.food_fragment, container, false);
 
-        GridView gridView = (GridView)rootView.findViewById(R.id.foodGridView);
-
-        ArrayList<HashMap<String, Object>>  foods = new ArrayList<HashMap<String, Object>>();
-
-        for (int i = 0; i < 20; i++){
-            HashMap<String, Object> desk = new HashMap<String, Object>();
-            desk.put("image", R.drawable.dinner);
-            desk.put("title", "菜品" + i);
-            foods.add(desk);
-        }
-
-        SimpleAdapter ad = new SimpleAdapter(getActivity(), foods, R.layout.food_item,
-                new String[]{"image","title"},new int[]{R.id.foodImage,R.id.foodTitle});
-        gridView.setAdapter(ad);
-
-
-
-
-        gridView.setOnItemClickListener(new ItemClickListener());
-
+        initData(rootView);
 
         return rootView;
+    }
+
+
+    public void initData(final View rootView) {
+
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+
+
+                GridView gridView = (GridView)rootView.findViewById(R.id.foodGridView);
+
+                ArrayList<HashMap<String, Object>>  foods = new ArrayList<HashMap<String, Object>>();
+
+                List<Menu> menus = menuList.getItems();
+
+                Iterator<Menu> it = menus.iterator();
+
+                int i = 0;
+                while (it.hasNext()) {
+                    Menu menu = it.next();
+                    HashMap<String, Object> desk = new HashMap<String, Object>();
+                    desk.put("image", R.drawable.dinner);
+                    desk.put("title", menu.getItem().getItemName());
+                    foods.add(desk);
+                }
+
+
+                SimpleAdapter ad = new SimpleAdapter(getActivity(), foods, R.layout.food_item,
+                        new String[]{"image","title"},new int[]{R.id.foodImage,R.id.foodTitle});
+                gridView.setAdapter(ad);
+
+                gridView.setOnItemClickListener(new ItemClickListener());
+            }
+        };
+
+        new Thread() {
+
+            @Override
+            public void run() {
+
+                Message msg = new Message();
+                msg.what = 1;
+                try {
+                    menuList = MenuModule.getMenuList(mContext);
+                    Log.i("MenuList - ", menuList.toString());
+                } catch (AppException e) {
+                    e.printStackTrace();
+                }
+                mHandler.sendMessage(msg);
+            }
+        }.start();
     }
 
 
@@ -123,5 +169,9 @@ public class FoodTabFragment extends Fragment {
             });
             dialogBuilder.show();
         }
+    }
+
+    public void setContext(AppContext mContext) {
+        this.mContext = mContext;
     }
 }
